@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import FastAPI, Form, HTTPException, Query, Request
@@ -5,11 +6,14 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from capacita.schemas import EmployeeCreate, EmployeeResponse, EmployeeUpdate
+from capacita.settings import settings
 from capacita.storage import get_next_id, load_db, save_db
 
 
+TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates"
+
 app = FastAPI(title="Capacita - Backend Capacity Planner API")
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
 @app.get("/health")
@@ -158,3 +162,10 @@ async def delete_employee_form(employee_id: int):
             save_db(employees)
             return RedirectResponse(url="/", status_code=303)
     raise HTTPException(status_code=404, detail="Employee not found")
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("capacita.main:app", host=settings.host, port=settings.port, reload=False)
+
