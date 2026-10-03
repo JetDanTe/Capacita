@@ -16,7 +16,7 @@ app = FastAPI(title="Capacita - Backend Capacity Planner API")
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health() -> dict[str, str]:
     return {"status": "ok"}
 
@@ -107,7 +107,7 @@ async def delete_employee(employee_id: int) -> dict[str, str]:
     raise HTTPException(status_code=404, detail="Employee not found")
 
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 async def employees_page(request: Request):
     employees = load_db()
     return templates.TemplateResponse(
