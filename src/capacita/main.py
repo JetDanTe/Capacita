@@ -1,12 +1,15 @@
 from typing import Annotated
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, Form, HTTPException, Query, Request
+from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
 
 from capacita.schemas import EmployeeCreate, EmployeeResponse, EmployeeUpdate
 from capacita.storage import get_next_id, load_db, save_db
 
 
 app = FastAPI(title="Capacita - Backend Capacity Planner API")
+templates = Jinja2Templates(directory="templates")
 
 
 @app.get("/health")
@@ -31,6 +34,31 @@ async def list_employees(
         employees = [emp for emp in employees if emp.get("department") == department]
 
     return employees[skip : skip + limit]
+
+
+@app.get("/employees/new")
+async def add_employee_page(request: Request):
+    return templates.TemplateResponse(request=request, name="employee_add.html", context={})
+
+
+@app.post("/employees/new")
+async def add_employee_form(
+    name: str = Form(...),
+    age: int = Form(...),
+    department: str = Form(...),
+    team: str = Form(...),
+):
+    employees = load_db()
+    record = EmployeeCreate(
+        name=name,
+        age=age,
+        department=department,
+        team=team,
+    ).model_dump()
+    record["id"] = get_next_id(employees)
+    employees.append(record)
+    save_db(employees)
+    return RedirectResponse(url="/", status_code=303)
 
 
 @app.get("/employees/{employee_id}", response_model=EmployeeResponse)
@@ -72,4 +100,61 @@ async def delete_employee(employee_id: int) -> dict[str, str]:
             del employees[idx]
             save_db(employees)
             return {"message": "Employee deleted successfully"}
+    raise HTTPException(status_code=404, detail="Employee not found")
+
+
+@app.get("/")
+async def employees_page(request: Request):
+    employees = load_db()
+    return templates.TemplateResponse(
+        request=request,
+        name="employees.html",
+        context={"employees": employees},
+    )
+
+
+@app.get("/employees/{employee_id}/edit")
+async def edit_employee_page(request: Request, employee_id: int):
+    employees = load_db()
+    for employee in employees:
+        if employee.get("id") == employee_id:
+            return templates.TemplateResponse(
+                request=request,
+                name="employee_edit.html",
+                context={"employee": employee},
+            )
+    raise HTTPException(status_code=404, detail="Employee not found")
+
+
+@app.post("/employees/{employee_id}/edit")
+async def edit_employee_form(
+    employee_id: int,
+    name: str = Form(...),
+    age: int = Form(...),
+    department: str = Form(...),
+    team: str = Form(...),
+):
+    employees = load_db()
+    for idx, existing in enumerate(employees):
+        if existing.get("id") == employee_id:
+            updates = EmployeeUpdate(
+                name=name,
+                age=age,
+                department=department,
+                team=team,
+            ).model_dump(exclude_unset=True)
+            employees[idx] = {**existing, **updates}
+            save_db(employees)
+            return RedirectResponse(url="/", status_code=303)
+    raise HTTPException(status_code=404, detail="Employee not found")
+
+
+@app.post("/employees/{employee_id}/delete")
+async def delete_employee_form(employee_id: int):
+    employees = load_db()
+    for idx, employee in enumerate(employees):
+        if employee.get("id") == employee_id:
+            del employees[idx]
+            save_db(employees)
+            return RedirectResponse(url="/", status_code=303)
     raise HTTPException(status_code=404, detail="Employee not found")

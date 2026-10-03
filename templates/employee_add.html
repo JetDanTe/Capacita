@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Add Employee - Capacita{% endblock %}
+
+{% block content %}
+<h2>Add Employee</h2>
+<form method="post" action="/employees/new">
+  <label for="name">Name</label>
+  <input id="name" name="name" required>
+
+  <label for="age">Age</label>
+  <input id="age" name="age" type="number" min="0" required>
+
+  <label for="department">Department</label>
+  <input id="department" name="department" required>
+
+  <label for="team">Team</label>
+  <input id="team" name="team" required>
+
+  <button type="submit">Create Employee</button>
+</form>
+{% endblock %}

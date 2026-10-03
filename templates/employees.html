@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Employees - Capacita{% endblock %}
+
+{% block content %}
+<h2>All Employees</h2>
+
+{% if employees %}
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Department</th>
+      <th>Team</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for employee in employees %}
+    <tr>
+      <td>{{ employee.id }}</td>
+      <td>{{ employee.name }}</td>
+      <td>{{ employee.age }}</td>
+      <td>{{ employee.department }}</td>
+      <td>{{ employee.team }}</td>
+      <td class="actions">
+        <a class="btn btn-edit" href="/employees/{{ employee.id }}/edit">Edit</a>
+        <form class="inline" method="post" action="/employees/{{ employee.id }}/delete">
+          <button type="submit" class="btn btn-delete">Delete</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No employees found.</p>
+{% endif %}
+{% endblock %}
