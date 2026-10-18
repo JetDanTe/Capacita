@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Employee - Capacita{% endblock %}
+
+{% block content %}
+<h2>Edit Employee #{{ employee.id }}</h2>
+<form method="post" action="/employees/{{ employee.id }}/edit">
+  <label for="name">Name</label>
+  <input id="name" name="name" value="{{ employee.name }}" required>
+
+  <label for="age">Age</label>
+  <input id="age" name="age" type="number" min="0" value="{{ employee.age }}" required>
+
+  <label for="department">Department</label>
+  <input id="department" name="department" value="{{ employee.department }}" required>
+
+  <label for="team">Team</label>
+  <input id="team" name="team" value="{{ employee.team }}" required>
+
+  <button type="submit">Update Employee</button>
+</form>
+{% endblock %}

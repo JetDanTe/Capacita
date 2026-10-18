@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Capacita{% endblock %}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    header { margin-bottom: 1.5rem; }
+    nav a { margin-right: 1rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border: 1px solid #ddd; padding: 0.6rem; text-align: left; }
+    th { background: #f5f5f5; }
+    .actions { display: flex; gap: 0.5rem; align-items: center; }
+    form.inline { display: inline-flex; margin: 0; }
+    label { display: block; margin-top: 0.8rem; }
+    input { width: 100%; max-width: 28rem; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
+    .btn, button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.875rem;
+      font-family: inherit;
+      font-weight: 500;
+      line-height: 1.25;
+      text-decoration: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    form:not(.inline) button {
+      margin-top: 1rem;
+      background-color: #2563eb;
+      color: #ffffff;
+    }
+    form:not(.inline) button:hover {
+      background-color: #1d4ed8;
+    }
+    .btn-edit {
+      background-color: #2563eb;
+      color: #ffffff;
+      border-color: #1d4ed8;
+    }
+    .btn-edit:hover {
+      background-color: #1d4ed8;
+      text-decoration: none;
+    }
+    .btn-delete {
+      background-color: #dc2626;
+      color: #ffffff;
+      border-color: #b91c1c;
+    }
+    .btn-delete:hover {
+      background-color: #b91c1c;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Capacita</h1>
+    <nav>
+      <a href="/">Employees</a>
+      <a href="/employees/new">Add Employee</a>
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
