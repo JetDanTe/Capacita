@@ -8,8 +8,10 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "alembic>=1.20.0",
     "fastapi[standard]>=0.141.1",
     "pydantic-settings>=2.0.0",
+    "sqlalchemy>=2.0.54",
 ]
 
 [project.scripts]
@@ -18,6 +20,9 @@ capacita = "capacita:main"
 [build-system]
 requires = ["uv_build>=0.12.19,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = "app"
 
 [dependency-groups]
 dev = [
